@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cek Ongkir</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+.container {
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 15px;
+  width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.result {
+  background: #334155;
+  padding: 15px;
+  border-radius: 10px;
+  display: none;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🚚 Cek Ongkir</h1>
+  <input type="text" id="search" placeholder="Ketik daerah...">
+  <div class="loading" id="loading">Memuat data...</div>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+let data = [];
+
+async function loadData() {
+  const res = await fetch('data.json');
+  const raw = await res.json();
+
+  data = raw.map(item => {
+    let lokasi = item["KABUPATEN/KECAMATAN"] || "";
+    let parts = lokasi.split(",").map(x => x.trim());
+
+    return {
+      full: lokasi.toLowerCase(),
+      kota: parts[0] || "",
+      kecamatan: parts[1] || "",
+      desa: parts[2] || "",
+      ongkir: parseInt(item["ONGKIR"]) || 0
+    };
+  });
+
+  document.getElementById("loading").innerText = "Siap digunakan!";
+}
+
+function searchData(keyword) {
+  keyword = keyword.toLowerCase();
+
+  let found = data.find(d => d.full.includes(keyword));
+
+  if (found) {
+    document.getElementById("result").style.display = "block";
+    document.getElementById("result").innerHTML = `
+      <b>Wilayah:</b><br>
+      ${found.kota} - ${found.kecamatan} - ${found.desa}<br><br>
+      <b>Ongkir:</b> Rp ${found.ongkir.toLocaleString()}
+    `;
+  } else {
+    document.getElementById("result").style.display = "block";
+    document.getElementById("result").innerHTML = "Data tidak ditemukan 😢";
+  }
+}
+
+document.getElementById("search").addEventListener("input", function() {
+  if (this.value.length > 2) {
+    searchData(this.value);
+  }
+});
+
+loadData();
+</script>
+
+</body>
+</html>
