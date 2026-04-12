@@ -304,45 +304,49 @@
     }
   }
 
-  function renderResult(found) {
-    if (!found) {
+  function renderResults(results) {
+    if (results.length === 0) {
       resultEl.innerHTML = `
         <div class="result-empty">
           <span>🔍</span>
           Wilayah tidak ditemukan. Coba kata kunci lain.
         </div>`;
     } else {
-      const lokasi = [found.kota, found.kecamatan, found.desa].filter(Boolean).join(' › ');
+      const rows = results.map(found => {
+        const lokasi = [found.kota, found.kecamatan, found.desa].filter(Boolean).join(' › ');
+        return `
+          <div class="result-body" style="border-bottom: 1px solid var(--border);">
+            <div class="location-row">
+              <span class="loc-icon">🗺️</span>
+              <div>
+                <div class="loc-label">Wilayah</div>
+                <div class="loc-value">${lokasi}</div>
+              </div>
+            </div>
+            <div class="price-box">
+              <div>
+                <div class="price-label">Ongkos Kirim</div>
+                <div class="price-value">Rp ${found.ongkir.toLocaleString('id-ID')}</div>
+              </div>
+              <span class="price-icon">📦</span>
+            </div>
+          </div>`;
+      }).join('');
+
       resultEl.innerHTML = `
-        <div class="result-header">Hasil Pencarian</div>
-        <div class="result-body">
-          <div class="location-row">
-            <span class="loc-icon">🗺️</span>
-            <div>
-              <div class="loc-label">Wilayah</div>
-              <div class="loc-value">${lokasi}</div>
-            </div>
-          </div>
-          <div class="price-box">
-            <div>
-              <div class="price-label">Ongkos Kirim</div>
-              <div class="price-value">Rp ${found.ongkir.toLocaleString('id-ID')}</div>
-            </div>
-            <span class="price-icon">📦</span>
-          </div>
-        </div>`;
+        <div class="result-header">Ditemukan ${results.length} wilayah</div>
+        ${rows}`;
     }
 
     resultEl.className = 'result';
-    // Trigger reflow to restart animation
     void resultEl.offsetWidth;
     resultEl.className = 'result visible';
   }
 
   function searchData(keyword) {
     keyword = keyword.toLowerCase();
-    const found = data.find(d => d.full.includes(keyword));
-    renderResult(found || null);
+    const results = data.filter(d => d.full.includes(keyword));
+    renderResults(results);
   }
 
   searchEl.addEventListener('input', function () {
