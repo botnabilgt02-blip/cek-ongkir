@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cek Ongkir</title>
   <style>
+    /* WATERMARK */
+.watermark {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+  white-space: nowrap;
+  animation: fadeGlow 3s ease-in-out infinite;
+}
+
+@keyframes fadeGlow {
+  0%,100% { opacity: 0.4; }
+  50% {
+    opacity: 0.9;
+    text-shadow: 0 0 10px rgba(79,142,247,0.6);
+  }
+}
     /* ── RESET & BASE ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -53,13 +73,14 @@
         0 24px 60px rgba(0,0,0,.55),
         inset 0 1px 0 rgba(255,255,255,.05);
       backdrop-filter: blur(12px);
-      animation: slideUp .45s cubic-bezier(.22,.68,0,1.2) both;
+      animation: slideUp .45s cubic-bezier(.22,.68,0,1.2) both,
+           floatCard 6s ease-in-out infinite;
     }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes floatCard {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
 
     /* ── HEADER ── */
     .header {
@@ -359,24 +380,9 @@
 
   loadData();
 </script>
-
-</script>
-
-<div style="
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 1px;
-  white-space: nowrap;
-">
+<div class="watermark">
   ✦ DIBUAT OLEH @NABIL 2026 ✦
 </div>
-
-</body>
-</html>
 
 </body>
 </html>
