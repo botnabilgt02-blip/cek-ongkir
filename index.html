@@ -303,7 +303,17 @@
   }
 
   async function loadData() {
-    try {
+  try {
+
+    // ⬇️ TAMBAHKAN DI SINI
+    setStatus('loading', 'Memuat data...');
+
+    resultEl.innerHTML = `
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    `;
+    resultEl.className = 'result visible';
       const res = await fetch('data.json');
       const raw = await res.json();
 
@@ -320,6 +330,8 @@
       });
 
       setStatus('ready', 'Siap — ' + data.length + ' wilayah tersedia');
+      resultEl.innerHTML = '';
+resultEl.className = 'result';
     } catch {
       setStatus('', 'Gagal memuat data');
     }
